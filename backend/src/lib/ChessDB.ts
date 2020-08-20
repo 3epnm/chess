@@ -104,7 +104,7 @@ export class ChessDB {
 
       if (hasSessionCollection.length < 1) {
         await this.db.createCollection('sessions')
-        await this.db.collection('sessions').createIndex({ unique: true })
+        await this.db.collection('sessions').createIndex({ unique: 1 })
       }
     } catch (ex) {
       this.connected = false

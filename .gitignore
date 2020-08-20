@@ -2,7 +2,6 @@
 node_modules
 backend/dist
 backend/.env
-backend/tests/*
 frontend/dist
 frontend/.env.development
 frontend/.env.production
