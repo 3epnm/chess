@@ -1,11 +1,15 @@
 .DS_Store
 node_modules
+backend/coverage
 backend/dist
 backend/.env
+backend/.nyc_output
+
 frontend/dist
 frontend/.env.development
 frontend/.env.production
 info.js
+
 
 # local env files
 .env.local
