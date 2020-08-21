@@ -27,7 +27,7 @@ export class ChessService {
     if (LOG_LEVEL > 2) console.log('ChessService', 'send', message)
   }
 
-  public async startGame (ws: WebSocket): Promise<any> {
+  public async startGame (ws: WebSocket): Promise<void> {
     const { sessionId, playerId } = await this.database.createSession()
 
     const head = { action: 'gameStart', sessionId, playerId }
@@ -36,7 +36,7 @@ export class ChessService {
     this.broadcast(ws, Object.assign({ isPlayer: false }, head))
   }
 
-  public async joinGame (ws: WebSocket, message: any): Promise<any> {
+  public async joinGame (ws: WebSocket, message: any): Promise<void> {
     const { sessionId } = message
     const { playerId } = await this.database.joinSession(sessionId)
 
@@ -46,7 +46,7 @@ export class ChessService {
     this.broadcast(ws, Object.assign({ isPlayer: false }, head))
   }
 
-  public async quitGame (ws: WebSocket, message: any): Promise<any> {
+  public async quitGame (ws: WebSocket, message: any): Promise<void> {
     const { sessionId } = message
     await this.database.closeSession(sessionId)
 
@@ -54,7 +54,7 @@ export class ChessService {
     this.broadcast(ws, { action: 'gameQuit', sessionId })
   }
 
-  public async movePiece (ws: WebSocket, message: any): Promise<any> {
+  public async movePiece (ws: WebSocket, message: any): Promise<void> {
     const { sessionId, playerId, data } = message
     await this.database.movePiece(sessionId, playerId, data)
 
@@ -62,7 +62,7 @@ export class ChessService {
   }
 
   public async disconnect (): Promise<void> {
-    return new Promise(resolve => {
+    return await new Promise(resolve => {
       this.wss.clients.forEach((ws: WebSocket) => {
         if (ws.readyState === WebSocket.OPEN) {
           this.send(ws, { action: 'serverShutdown' })

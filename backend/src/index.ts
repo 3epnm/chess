@@ -1,4 +1,4 @@
-import express from 'express'
+import express, { NextFunction, Request, Response, Errback } from 'express'
 import espressWs from 'express-ws'
 import cors from 'cors'
 
@@ -29,6 +29,9 @@ const main = async () => {
   app.use(cors())
   app.use('/api/', ChessApi(database))
   app.use('/websocket/', ChessWs(service))
+  app.use((err: Errback, req: Request, res: Response, next: NextFunction) => {
+    if (LOG_LEVEL > 0) console.error(err)
+  })
 
   app.listen(LISTEN_PORT, () => {
     if (LOG_LEVEL > 1) console.log(`Server listening on port ${LISTEN_PORT}`)
