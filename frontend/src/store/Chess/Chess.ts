@@ -157,7 +157,7 @@ export default class Chess extends VuexModule implements ChessStore {
           this.context.commit('MOVE_PIECE', move)
         }
 
-        this.game.sessionId = data._id
+        this.game.sessionId = data.sessionId
         this.game.started = data.started
         this.game.pending = data.pending
 
