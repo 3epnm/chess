@@ -1,0 +1,13 @@
+{
+    "en_GB": {
+        "start-game": "Start new game",
+        "join-game": "Join game",
+        "quit-game": "Quit game",
+        "wait": "Wait for opponent to join.",
+        "start": "The game has already started.",
+        "your-turn": "It's is your turn.",
+        "other-turn": "It's your opponent's turn.",
+        "player-w": "You play the white pieces.",
+        "player-b": "You play the black pieces."
+    }
+}

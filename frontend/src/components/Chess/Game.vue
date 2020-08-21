@@ -2,8 +2,11 @@
   <div>
     <div v-if="Error.code < 1" class="info">
       <div :class="classObjectCenter">
-        <span v-if="TurnMessage" :class="classObjectTurnMessage">{{ TurnMessage }}</span>
-        <span v-if="GameMessage">{{ GameMessage }}</span>
+        <span
+          v-if="TurnMessage"
+          :class="classObjectTurnMessage">{{ TurnMessage }}</span>
+        <span
+          v-if="GameMessage">{{ GameMessage }}</span>
       </div>
     </div>
     <div v-else class="error">
@@ -16,15 +19,15 @@
       <button
         v-if="!isStarted"
         @click="startGame"
-        :disabled="isDisabled">Start new game</button>
+        :disabled="isDisabled">{{ start }}</button>
       <button
         v-if="isStarted && isPending && !isPlayer"
         @click="joinGame"
-        :disabled="isDisabled">Join a game</button>
+        :disabled="isDisabled">{{ join }}</button>
       <button
         v-if="isPlayer || isVisitor"
         @click="quitGame"
-        :disabled="isDisabled">Quit game</button>
+        :disabled="isDisabled">{{ quit }}</button>
     </div>
   </div>
 </template>
@@ -54,6 +57,10 @@ export default class Game extends Vue {
   @Getter isPending!: boolean
   @Getter isTurn!: boolean
   @Getter isDisabled!: boolean
+
+  start = Vue.prototype.$gettext('start-game')
+  join = Vue.prototype.$gettext('join-game')
+  quit = Vue.prototype.$gettext('quit-game')
 
   get classObjectCenter (): VueElementClassObj {
     return {
@@ -85,15 +92,15 @@ export default class Game extends Vue {
 
   get GameMessage () {
     if (this.isPending && this.isPlayer) {
-      return 'Wait for opponent to join.'
+      return Vue.prototype.$gettext('wait')
     }
 
     if (!this.isPending && this.isPlayer) {
-      return `You play the ${this.Player.color === 'w' ? 'white' : 'black'} pieces.`
+      return Vue.prototype.$gettext(`player-${this.Player.color}`)
     }
 
     if (!this.isPending && this.Player.isVisitor) {
-      return 'The game has already started.'
+      return Vue.prototype.$gettext('start')
     }
 
     return ''
@@ -102,9 +109,9 @@ export default class Game extends Vue {
   get TurnMessage () {
     if (!this.isPending && this.isPlayer) {
       if (this.isTurn) {
-        return 'It\'s is your turn.'
+        return Vue.prototype.$gettext('your-turn')
       } else {
-        return 'It is your opponent\'s turn.'
+        return Vue.prototype.$gettext('other-turn')
       }
     }
 
