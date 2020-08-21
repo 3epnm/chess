@@ -60,6 +60,8 @@ const main = async () => {
   process.on('SIGUSR2', onExit);
   process.on('SIGTERM', onExit);
   process.on('SIGINT', onExit);
+
+  if (LOG_LEVEL > 1) console.log(`Start`)
 }
 
 main()

@@ -28,6 +28,7 @@ import { Action, Getter } from 'vuex-class'
 @Component
 export default class Piece extends Vue {
   @Prop() private piece!: ChessPiece
+
   @Action('movePiece') movePiece!: ActionMethod
   @Action('startMoving') startMoving!: ActionMethod
   @Action('endMoving') endMoving!: ActionMethod
@@ -178,11 +179,21 @@ export default class Piece extends Vue {
   width: calc(100% / 8);
   height: calc(100% / 8);
 
-  &.hover { background-color: rgb(70, 168, 80); }
-  &.occupied.hover { background-color: rgb(189, 82, 82); }
+  &.hover {
+    background-color: rgb(0, 192, 19);
+  }
 
-  &[draggable=true] { cursor: pointer; }
-  &[draggable=false] { user-select: none; }
+  &.occupied.hover {
+    background-color: rgb(255, 0, 0);
+  }
+
+  &[draggable=true] {
+    cursor: pointer;
+  }
+
+  &[draggable=false] {
+    user-select: none;
+  }
 
   &[data-col="a"] { left: 0; }
   &[data-col="b"] { left: calc(100% / 8 * 1); }

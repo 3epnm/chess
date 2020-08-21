@@ -21,7 +21,7 @@ class ChessRules {
     const from = state.pieces.find((piece: ChessPiece) => piece.pos === data.from)
     const to = state.pieces.find((piece: ChessPiece) => piece.pos === data.to)
 
-    // if (this.isKing(to)) return false
+    if (this.isKing(to)) return false
 
     if (this.isOwn(from, to)) return false
 

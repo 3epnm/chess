@@ -88,7 +88,8 @@ export class ChessService {
           this.send(ws, { action: 'serverShutdown' })
         }
       })
-
+      let i = 4
+      if (LOG_LEVEL > 1) setInterval(() => console.log(i--), 1000)
       setTimeout(resolve, 5000)
     })
   }

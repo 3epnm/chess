@@ -1,14 +1,17 @@
 <template>
-  <div>
+  <div class="chess">
     <div v-if="Error.code < 1" class="info">
       <div :class="classObjectCenter">
-        <span v-if="TurnMessage" :class="classObjectTurnMessage">{{ TurnMessage }}</span>
-        <span v-if="GameMessage">{{ GameMessage }}</span>
+        <span
+          v-if="!isPending && isPlayer"
+          :class="classObjectTurnMessage">{{ $t(isTurn && 'your-turn' || 'other-turn') }}</span>
+        <span
+          v-if="GameMessage">{{ $t(GameMessage) }}</span>
       </div>
     </div>
     <div v-else class="error">
       <div>
-        <span class="animate__animated animate__heartBeat animate__infinite">{{ Error.message }}</span>
+        <span class="animate__animated animate__heartBeat animate__infinite">{{ $t(Error.message) }}</span>
       </div>
     </div>
     <Board/>
@@ -16,15 +19,15 @@
       <button
         v-if="!isStarted"
         @click="startGame"
-        :disabled="isDisabled">Start new game</button>
+        :disabled="isDisabled">{{ $t('start-game') }}</button>
       <button
         v-if="isStarted && isPending && !isPlayer"
         @click="joinGame"
-        :disabled="isDisabled">Join a game</button>
+        :disabled="isDisabled">{{ $t('join-game') }}</button>
       <button
         v-if="isPlayer || isVisitor"
         @click="quitGame"
-        :disabled="isDisabled">Quit game</button>
+        :disabled="isDisabled">{{ $t('quit-game') }}</button>
     </div>
   </div>
 </template>
@@ -61,7 +64,7 @@ export default class Game extends Vue {
     }
   }
 
-  get classObjectTurnMessage () {
+  get classObjectTurnMessage (): VueElementClassObj {
     return {
       /* eslint-disable @typescript-eslint/camelcase */
       animate__animated: this.isTurn,
@@ -71,7 +74,7 @@ export default class Game extends Vue {
     }
   }
 
-  async created () {
+  async created (): Promise<void> {
     await this.init()
 
     this.$store.subscribe((mutation) => {
@@ -83,72 +86,60 @@ export default class Game extends Vue {
     })
   }
 
-  get GameMessage () {
+  get GameMessage (): string | undefined {
     if (this.isPending && this.isPlayer) {
-      return 'Wait for opponent to join.'
+      return 'wait'
     }
 
     if (!this.isPending && this.isPlayer) {
-      return `You play the ${this.Player.color === 'w' ? 'white' : 'black'} pieces.`
+      return `player-${this.Player.color}`
     }
 
     if (!this.isPending && this.Player.isVisitor) {
-      return 'The game has already started.'
+      return 'started'
     }
-
-    return ''
-  }
-
-  get TurnMessage () {
-    if (!this.isPending && this.isPlayer) {
-      if (this.isTurn) {
-        return 'It\'s is your turn.'
-      } else {
-        return 'It is your opponent\'s turn.'
-      }
-    }
-
-    return ''
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.info {
-  height: 1em;
-  margin-bottom: 1em;
-  div {
-    width: 380px;
-    margin: 0 auto;
+.chess {
+  .info {
+    height: 1em;
+    margin-bottom: 1em;
+    div {
+      width: 380px;
+      margin: 0 auto;
 
-    &:not(.center) {
-      span:first-child {
-        float: left;
-        &.animate__animated {
-          font-weight: bold;
-          display: block;
+      &:not(.center) {
+        span:first-child {
+          float: left;
+          &.animate__animated {
+            font-weight: bold;
+            display: block;
+          }
+        }
+        span:last-child {
+          float: right;
         }
       }
-      span:last-child {
-        float: right;
+    }
+  }
+  .error {
+    height: 1em;
+    margin-bottom: 1em;
+    div {
+      width: 380px;
+      margin: 0 auto;
+      span {
+        color: red;
+        display: block;
+        font-weight: bold;
       }
     }
   }
-}
-.error {
-  height: 1em;
-  margin-bottom: 1em;
-  div {
-    width: 380px;
-    margin: 0 auto;
-    span {
-      color: red;
-      display: block;
-      font-weight: bold;
-    }
+  .ctrls {
+    margin-top:1em;
   }
-}
-.ctrls {
-  margin-top:1em;
 }
 </style>

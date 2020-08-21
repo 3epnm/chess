@@ -1,7 +1,7 @@
 <template>
     <div
       class="chessboard-field"
-      :class="classObject"
+      :class="{ hover }"
       @drop="onDrop"
       @dragover="onDragOver"
       @dragleave="onDragLeave"></div>
@@ -18,12 +18,6 @@ export default class Field extends Vue {
   @Action('movePiece') movePiece!: ActionMethod
 
   hover = false
-
-  classObject (): VueElementClassObj {
-    return {
-      hover: this.hover
-    }
-  }
 
   onDrop (ev: DragEvent): void {
     ev.preventDefault()
@@ -66,6 +60,8 @@ export default class Field extends Vue {
   &:nth-child(56) ~ &:nth-child(-2n+63) {
     background-color: #d28b48;
   }
-  &.hover { background-color: rgb(70, 168, 80) !important; }
+  &.hover {
+    background-color: rgb(70, 168, 80) !important;
+  }
 }
 </style>

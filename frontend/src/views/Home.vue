@@ -15,6 +15,3 @@ import Chess from '@components/Chess.vue'
 })
 export default class Home extends Vue { }
 </script>
-
-<style lang="scss" scoped>
-</style>

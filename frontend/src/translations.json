@@ -1,0 +1,16 @@
+{
+  "en": {
+    "start-game": "Start new game",
+    "join-game": "Join a game",
+    "quit-game": "Quit game",
+    "wait": "Wait for opponent to join.",
+    "player-w": "You play the white pieces.",
+    "player-b": "You play the black pieces.",
+    "started": "The game has already started.",
+    "your-turn": "It's is your turn.",
+    "other-turn": "It's your opponent's turn.",
+    "Error, unexpected breakup": "Error, unexpected breakup",
+    "Error while reconnect, give up.": "Error while reconnecting, give up.",
+    "Chess API not responding.": "Error, could not connect to server."
+  }
+}
