@@ -63,15 +63,13 @@ export class ChessService {
 
   public async disconnect (): Promise<void> {
     return new Promise(resolve => {
-      // this.wss.clients.forEach((ws: WebSocket) => {
-      //   if (ws.readyState === WebSocket.OPEN) {
-      //     this.send(ws, { action: 'serverShutdown' })
-      //   }
-      // })
+      this.wss.clients.forEach((ws: WebSocket) => {
+        if (ws.readyState === WebSocket.OPEN) {
+          this.send(ws, { action: 'serverShutdown' })
+        }
+      })
 
-      // setTimeout(resolve, 5000)
-
-      resolve()
+      setTimeout(resolve, 5000)
     })
   }
 }
