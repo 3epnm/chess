@@ -43,4 +43,31 @@ body {
     margin: 0.5em 0px 0px 0px
   }
 }
+
+@keyframes pulse2 {
+  from {
+    transform: scale3d(1, 1, 1);
+  }
+
+  50% {
+    transform: scale3d(1.15, 1.15, 1.15);
+  }
+
+  to {
+    transform: scale3d(1, 1, 1);
+  }
+}
+
+.pulse2 {
+  animation-name: pulse2;
+  animation-timing-function: ease-in-out;
+}
+
+.animate__pulse2 {
+    animation-name: pulse2;
+    -webkit-animation-name: pulse2;
+    -webkit-animation-timing-function: ease-in-out;
+    animation-timing-function: ease-in-out;
+}
+
 </style>

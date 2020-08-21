@@ -22,6 +22,8 @@ export class ChessService {
   }
 
   private send (ws: WebSocket, message: any): void {
+    if (ws.readyState !== WebSocket.OPEN) return
+
     ws.send(JSON.stringify(message))
 
     if (LOG_LEVEL > 2) console.log('ChessService', 'send', message)

@@ -9,6 +9,7 @@ export default class Chess extends VuexModule implements ChessStore {
   pieces: ChessPiece[] = []
   fields: ChessField[] = []
 
+  sessionLoaded = false
   lastColor: ChessPieceColors = 'b'
   movingPosition?: ChessBoardPositions = undefined
 
@@ -20,61 +21,54 @@ export default class Chess extends VuexModule implements ChessStore {
 
   player: ChessPlayer = {
     isPlayer: false,
-    isVisitor: false
+    isVisitor: false,
+    color: undefined
   }
-
-  sessionLoaded = false
 
   @Mutation
   GAME_START (data: GameInit) {
-    this.game = {
-      sessionId: data.sessionId,
-      started: true,
-      pending: true
-    }
+    this.game.sessionId = data.sessionId
+    this.game.started = true
+    this.game.pending = true
+
     if (data.isPlayer) {
-      this.player = {
-        playerId: data.playerId,
-        isPlayer: true,
-        isVisitor: false,
-        color: 'w'
-      }
+      this.player.playerId = data.playerId
+      this.player.isPlayer = true
+      this.player.isVisitor = false
+      this.player.color = 'w'
     }
   }
 
   @Mutation
   GAME_JOIN (data: GameInit) {
-    this.game = {
-      sessionId: data.sessionId,
-      started: true,
-      pending: false
-    }
+    this.game.sessionId = data.sessionId
+    this.game.started = true
+    this.game.pending = false
+
     if (data.isPlayer) {
-      this.player = {
-        playerId: data.playerId,
-        isPlayer: true,
-        isVisitor: false,
-        color: 'b'
-      }
+      this.player.playerId = data.playerId
+      this.player.isPlayer = true
+      this.player.isVisitor = false
+      this.player.color = 'b'
     }
     if (!this.player.isPlayer) {
+      this.player.isPlayer = false
       this.player.isVisitor = true
+      this.player.color = undefined
     }
   }
 
   @Mutation
   GAME_QUIT () {
-    this.game = {
-      sessionId: '',
-      started: false,
-      pending: false
-    }
-    this.player = {
-      playerId: '',
-      isPlayer: false,
-      isVisitor: false,
-      color: undefined
-    }
+    this.game.sessionId = undefined
+    this.game.started = false
+    this.game.pending = false
+
+    this.player.playerId = undefined
+    this.player.isPlayer = false
+    this.player.isVisitor = false
+    this.player.color = undefined
+
     this.lastColor = 'b'
   }
 

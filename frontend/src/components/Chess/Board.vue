@@ -30,18 +30,12 @@ export default class Board extends Vue {
   @Getter Player!: ChessPlayer
   @Getter isStarted!: boolean
 
-  get classObject () {
-    let res = ''
-    if (this.isStarted) {
-      res += 'animated'
-      if (this.Player.color === 'w') {
-        res += '-b'
-      }
-      if (this.Player.color === 'b') {
-        res += '-w'
-      }
+  get classObject (): VueElementClassObj {
+    return {
+      animated: this.isStarted && this.Player.isVisitor,
+      white: this.Player.color === 'b',
+      black: this.Player.color === 'w'
     }
-    return res
   }
 }
 </script>

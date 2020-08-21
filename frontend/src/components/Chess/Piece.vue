@@ -1,18 +1,22 @@
 <template>
   <div
+    v-if="canRender"
     class="chessboard-piece"
-    :class="classObject"
+    :class="classObjectPiece"
     :data-col="col"
     :data-row="row"
     :draggable="draggable"
-    v-if="ImagesLoaded && SessionLoaded"
-    v-on:drop="onDrop"
-    v-on:dragover="onDragOver"
-    v-on:dragenter="onDragEnter"
-    v-on:dragleave="onDragLeave"
-    v-on:dragstart="onDragStart"
-    v-on:dragend="onDragEnd">
-    <img :class="{ hidden }" :src="image" />
+    @mouseover="onOver"
+    @mouseout="onOut"
+    @drop="onDrop"
+    @dragover="onDragOver"
+    @dragenter="onDragEnter"
+    @dragleave="onDragLeave"
+    @dragstart="onDragStart"
+    @dragend="onDragEnd">
+    <div>
+      <img :class="classObjectImage" :src="image" />
+    </div>
   </div>
 </template>
 
@@ -28,6 +32,7 @@ export default class Piece extends Vue {
   @Action('startMoving') startMoving!: ActionMethod
   @Action('endMoving') endMoving!: ActionMethod
   @Action('validateMove') validateMove!: ActionMethod
+
   @Getter Images!: ChessPieceImage[]
   @Getter ImagesLoaded!: boolean
   @Getter SessionLoaded!: boolean
@@ -38,8 +43,30 @@ export default class Piece extends Vue {
   hover = false
   hidden = false
   occupied = false
+  animated = false
 
-  async created () {
+  get classObjectPiece (): VueElementClassObj {
+    return {
+      hover: this.hover,
+      occupied: this.occupied,
+      black: this.piece.color === 'b',
+      white: this.piece.color === 'w'
+    }
+  }
+
+  get classObjectImage (): VueElementClassObj {
+    return {
+      hidden: this.hidden,
+      /* eslint-disable @typescript-eslint/camelcase */
+      animate__animated: this.animated,
+      animate__pulse2: this.animated,
+      animate__infinite: this.animated,
+      animate__faster: this.animated
+      /* eslint-enable */
+    }
+  }
+
+  created (): void {
     this.$store.subscribe((mutation) => {
       switch (mutation.type) {
         case 'Connected':
@@ -49,23 +76,15 @@ export default class Piece extends Vue {
     })
   }
 
-  get classObject () {
-    return {
-      hover: this.hover,
-      occupied: this.occupied,
-      'chessboard-piece-b': this.piece.color === 'b',
-      'chessboard-piece-w': this.piece.color === 'w'
-    }
-  }
-
   onDragStart (ev: DragEvent): void {
     this.hidden = true
+    this.animated = false
 
     const dt = ev.dataTransfer as DataTransfer
     dt.setData('text/plain', this.piece.pos as string)
 
-    const img = new Image()
     if (this.image) {
+      const img = new Image(45, 45)
       img.src = this.image
       dt.setDragImage(img, 22, 22)
     }
@@ -76,23 +95,25 @@ export default class Piece extends Vue {
   onDragEnd (ev: DragEvent): void {
     (ev.dataTransfer as DataTransfer).clearData()
 
-    this.hidden = false
     this.hover = false
+    this.hidden = false
     this.occupied = false
+    this.animated = false
 
     this.endMoving()
   }
 
-  onDrop (ev: DragEvent): void {
+  async onDrop (ev: DragEvent): Promise<void> {
     ev.preventDefault()
 
     const from = (ev.dataTransfer as DataTransfer).getData('text') as ChessBoardPositions
     const to = this.piece.pos
 
-    this.movePiece({ from, to })
-
     this.hover = false
     this.occupied = false
+    this.animated = false
+
+    this.movePiece({ from, to })
   }
 
   async onDragEnter (ev: DragEvent): Promise<void> {
@@ -111,27 +132,40 @@ export default class Piece extends Vue {
 
   onDragLeave (ev: DragEvent): void {
     ev.preventDefault()
-
-    this.occupied = false
     this.hover = false
+    this.occupied = false
   }
 
-  get draggable () {
-    return this.isTurn && !this.isDisabled && this.Player.color === this.piece.color
+  onOver (): void {
+    if (!this.hidden && this.draggable) {
+      this.animated = true
+    }
   }
 
-  get image () {
-    const image = this.Images.find(image => image.name === this.piece.name && image.color === this.piece.color)
-
-    return image && image.svg
+  onOut (): void {
+    this.animated = false
   }
 
-  get col () {
-    return this.piece.pos && this.piece.pos.substr(0, 1)
+  get draggable (): boolean {
+    return this.isTurn &&
+      !this.isDisabled &&
+      this.Player.color === this.piece.color
   }
 
-  get row () {
-    return this.piece.pos && this.piece.pos.substr(1, 1)
+  get image (): string | undefined {
+    return this.Images.find(image => image.name === this.piece.name && image.color === this.piece.color)?.svg
+  }
+
+  get col (): string | undefined {
+    return this.piece.pos?.substr(0, 1)
+  }
+
+  get row (): string | undefined {
+    return this.piece.pos?.substr(1, 1)
+  }
+
+  get canRender (): boolean {
+    return this.ImagesLoaded && this.SessionLoaded
   }
 }
 </script>
@@ -167,24 +201,28 @@ export default class Piece extends Vue {
   &[data-row="7"] { top: calc(100% / 8 * 1); }
   &[data-row="8"] { top: 0; }
 
-  img {
-    width: 45px;
-    height: 45px;
-
+  div {
     position: absolute;
     top: 50%;
     left: 50%;
+    width: 45px;
+    height: 45px;
+
     transform: translate(-50%, -50%);
     pointer-events: none;
 
-    &.hidden {
-      visibility: hidden;
+    img {
+      pointer-events: none;
+
+      &.hidden {
+        visibility: hidden;
+      }
     }
   }
 }
 
-.animated-b .chessboard-piece-b,
-.animated-w .chessboard-piece-w,
+.black .black,
+.white .white,
 .animated .chessboard-piece {
   transition: left 0.5s, top 0.5s;
 }

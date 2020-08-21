@@ -1,10 +1,10 @@
 <template>
     <div
-        class="chessboard-field"
-        :class="classObject"
-        v-on:drop="onDrop"
-        v-on:dragover="onDragOver"
-        v-on:dragleave="onDragLeave"></div>
+      class="chessboard-field"
+      :class="classObject"
+      @drop="onDrop"
+      @dragover="onDragOver"
+      @dragleave="onDragLeave"></div>
 </template>
 
 <script lang="ts">
@@ -17,13 +17,17 @@ export default class Field extends Vue {
   @Prop() private field!: ChessField
   @Action('movePiece') movePiece!: ActionMethod
 
-  classObject = {
-    hover: false
+  hover = false
+
+  classObject (): VueElementClassObj {
+    return {
+      hover: this.hover
+    }
   }
 
   onDrop (ev: DragEvent): void {
     ev.preventDefault()
-    this.classObject.hover = false
+    this.hover = false
 
     const from = (ev.dataTransfer as DataTransfer).getData('text') as ChessBoardPositions
     const to = this.field.pos
@@ -33,11 +37,11 @@ export default class Field extends Vue {
 
   onDragOver (ev: DragEvent): void {
     ev.preventDefault()
-    this.classObject.hover = true
+    this.hover = true
   }
 
   onDragLeave (): void {
-    this.classObject.hover = false
+    this.hover = false
   }
 }
 </script>

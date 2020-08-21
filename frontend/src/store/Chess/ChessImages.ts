@@ -30,6 +30,7 @@ export default class ChessImages extends VuexModule {
           })
         }
       }
+
       return images
     } catch (err) {
       this.context.commit('ERROR', { code: 2, sender: 'Chess Images', message: 'Chess Images not found.', detail: 'Network Error', raw: err })

@@ -1,8 +1,8 @@
 <template>
   <div>
     <div v-if="Error.code < 1" class="info">
-      <div :class="{ center: !TurnMessage || !GameMessage }">
-        <span v-if="TurnMessage" :class="{ 'animate__animated animate__pulse animate__infinite': isTurn }">{{ TurnMessage }}</span>
+      <div :class="classObjectCenter">
+        <span v-if="TurnMessage" :class="classObjectTurnMessage">{{ TurnMessage }}</span>
         <span v-if="GameMessage">{{ GameMessage }}</span>
       </div>
     </div>
@@ -11,13 +11,20 @@
         <span class="animate__animated animate__heartBeat animate__infinite">{{ Error.message }}</span>
       </div>
     </div>
-
     <Board/>
-
     <div class="ctrls">
-      <button v-if="!isStarted" v-on:click="startGame" :disabled="isDisabled">Start new game</button>
-      <button v-if="isStarted && !isPlayer && isPending" v-on:click="joinGame" :disabled="isDisabled">Join a game</button>
-      <button v-if="isPlayer||isVisitor" v-on:click="quitGame" :disabled="isDisabled">Quit game</button>
+      <button
+        v-if="!isStarted"
+        @click="startGame"
+        :disabled="isDisabled">Start new game</button>
+      <button
+        v-if="isStarted && isPending && !isPlayer"
+        @click="joinGame"
+        :disabled="isDisabled">Join a game</button>
+      <button
+        v-if="isPlayer || isVisitor"
+        @click="quitGame"
+        :disabled="isDisabled">Quit game</button>
     </div>
   </div>
 </template>
@@ -40,13 +47,29 @@ export default class Game extends Vue {
   @Action quitGame!: ActionMethod
 
   @Getter Error!: ChessError
+  @Getter Player!: ChessPlayer
   @Getter isStarted!: boolean
   @Getter isPlayer!: boolean
   @Getter isVisitor!: boolean
   @Getter isPending!: boolean
   @Getter isTurn!: boolean
-  @Getter Player!: ChessPlayer
   @Getter isDisabled!: boolean
+
+  get classObjectCenter (): VueElementClassObj {
+    return {
+      center: this.isPending || this.isVisitor
+    }
+  }
+
+  get classObjectTurnMessage () {
+    return {
+      /* eslint-disable @typescript-eslint/camelcase */
+      animate__animated: this.isTurn,
+      animate__pulse: this.isTurn,
+      animate__infinite: this.isTurn
+      /* eslint-enable */
+    }
+  }
 
   async created () {
     await this.init()
