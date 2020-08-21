@@ -27,7 +27,25 @@ export class ChessService {
     if (LOG_LEVEL > 2) console.log('ChessService', 'send', message)
   }
 
-  public async startGame (ws: WebSocket): Promise<void> {
+  public async onRequest (ws: WebSocket, message: string): Promise<void> {
+    const data = JSON.parse(message)
+    switch (data.request) {
+      case 'startGame':
+        await this.startGame(ws)
+        break
+      case 'joinGame':
+        await this.joinGame(ws, data)
+        break
+      case 'quitGame':
+        await this.quitGame(ws, data)
+        break
+      case 'movePiece':
+        await this.movePiece(ws, data)
+        break
+    }
+  }
+
+  private async startGame (ws: WebSocket): Promise<void> {
     const { sessionId, playerId } = await this.database.createSession()
 
     const head = { action: 'gameStart', sessionId, playerId }
@@ -36,7 +54,7 @@ export class ChessService {
     this.broadcast(ws, Object.assign({ isPlayer: false }, head))
   }
 
-  public async joinGame (ws: WebSocket, message: any): Promise<void> {
+  private async joinGame (ws: WebSocket, message: any): Promise<void> {
     const { sessionId } = message
     const { playerId } = await this.database.joinSession(sessionId)
 
@@ -46,7 +64,7 @@ export class ChessService {
     this.broadcast(ws, Object.assign({ isPlayer: false }, head))
   }
 
-  public async quitGame (ws: WebSocket, message: any): Promise<void> {
+  private async quitGame (ws: WebSocket, message: any): Promise<void> {
     const { sessionId } = message
     await this.database.closeSession(sessionId)
 
@@ -54,7 +72,7 @@ export class ChessService {
     this.broadcast(ws, { action: 'gameQuit', sessionId })
   }
 
-  public async movePiece (ws: WebSocket, message: any): Promise<void> {
+  private async movePiece (ws: WebSocket, message: any): Promise<void> {
     const { sessionId, playerId, data } = message
     await this.database.movePiece(sessionId, playerId, data)
 
