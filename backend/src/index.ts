@@ -30,7 +30,7 @@ const main = async () => {
   app.use('/api/', ChessApi(database))
   app.use('/websocket/', ChessWs(service))
   app.use((err: Errback, req: Request, res: Response, next: NextFunction) => {
-    if (LOG_LEVEL > 0) console.error(err)
+    if (LOG_LEVEL >= 0) console.error(err)
   })
 
   app.listen(LISTEN_PORT, () => {
