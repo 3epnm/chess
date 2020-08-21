@@ -55,6 +55,4 @@ export default class WebSocket extends VuexModule {
 
     Vue.prototype.$socket.sendObj(request)
   }
-
-  get Socket () { return this.socket }
 }

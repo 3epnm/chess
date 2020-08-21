@@ -13,7 +13,7 @@ export default class Errors extends VuexModule {
   connected = false
 
   @Mutation
-  Connected (connected: boolean) {
+  CONNECTED (connected: boolean) {
     this.connected = connected
   }
 
@@ -46,13 +46,13 @@ export default class Errors extends VuexModule {
       </small>`)
   }
 
-  @Action({ commit: 'Connected' })
+  @Action({ commit: 'CONNECTED' })
   SOCKET_ONOPEN () {
     this.context.commit('CLEAR_ERROR')
     return true
   }
 
-  @Action({ commit: 'Connected' })
+  @Action({ commit: 'CONNECTED' })
   SOCKET_ONCLOSE () {
     const payload = { code: 6, sender: 'Chess WebSocket', message: 'Error, unexpected breakup.', detail: 'net::ERR_CONNECTION_DISCONNECTED' }
     if (this.connected) {
@@ -61,7 +61,7 @@ export default class Errors extends VuexModule {
     return false
   }
 
-  @Action({ commit: 'Connected' })
+  @Action({ commit: 'CONNECTED' })
   SOCKET_ONERROR () {
     return false
   }
