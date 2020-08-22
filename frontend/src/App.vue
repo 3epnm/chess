@@ -6,7 +6,6 @@
 
 <style lang="scss">
 @import './assets/styles/animate.min.css';
-@import '~vuejs-noty/dist/vuejs-noty.css';
 
 body {
   font-family: Avenir, Helvetica, Arial, sans-serif;

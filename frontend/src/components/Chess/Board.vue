@@ -25,7 +25,7 @@ import Piece from '@components/Chess/Piece.vue'
   }
 })
 export default class Board extends Vue {
-  @Getter private Fields!: ChessField[]
+  @Getter Fields!: ChessField[]
   @Getter Pieces!: ChessPiece[]
   @Getter Player!: ChessPlayer
   @Getter isStarted!: boolean

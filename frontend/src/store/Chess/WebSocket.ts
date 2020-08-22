@@ -2,28 +2,18 @@ import Vue from 'vue'
 import { Module, VuexModule, Mutation, Action } from 'vuex-module-decorators'
 
 @Module
-export default class WebSocket extends VuexModule {
+export default class WebSocket extends VuexModule implements WebSocketStore {
   socket: ChessSocketState = {
     isConnected: false,
     isShutdown: false,
     reconnectError: false
   }
 
-  @Action
-  serverShutdown () {
-    if (this.socket.isShutdown) return
-
-    this.socket.isShutdown = true
-    this.socket.isConnected = false
-
-    this.context.commit('WARNING', { sender: 'Chess Server Shutdown', message: 'Chess server shuts down.' })
-    this.context.dispatch('gameQuit')
-  }
-
   @Mutation
   SOCKET_ONOPEN (ev: Event) {
     Vue.prototype.$socket = ev.currentTarget
     this.socket.isConnected = true
+    this.socket.isShutdown = false
   }
 
   @Mutation
@@ -51,8 +41,25 @@ export default class WebSocket extends VuexModule {
 
   @Mutation
   REQUEST (request: ChessSocketRequest) {
-    if (!this.socket.isConnected) return
+    if (this.socket.isConnected) {
+      Vue.prototype.$socket.sendObj(request)
+    }
+  }
 
-    Vue.prototype.$socket.sendObj(request)
+  @Action
+  serverShutdown () {
+    if (!this.socket.isShutdown) {
+      this.socket.isShutdown = true
+      this.socket.isConnected = false
+
+      this.context.commit('WARNING', {
+        sender: 'Chess Server Shutdown',
+        message: 'Chess server shuts down.'
+      })
+    }
+  }
+
+  get Socket () {
+    return this.socket
   }
 }

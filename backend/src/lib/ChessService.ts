@@ -86,8 +86,10 @@ export class ChessService {
       this.wss.clients.forEach((ws: WebSocket) => {
         if (ws.readyState === WebSocket.OPEN) {
           this.send(ws, { action: 'serverShutdown' })
+          this.send(ws, { action: 'gameQuit' })
         }
       })
+
       let i = 4
       if (LOG_LEVEL > 1) setInterval(() => console.log(i--), 1000)
       setTimeout(resolve, 5000)

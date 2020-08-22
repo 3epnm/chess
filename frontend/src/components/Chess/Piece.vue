@@ -27,7 +27,7 @@ import { Action, Getter } from 'vuex-class'
 
 @Component
 export default class Piece extends Vue {
-  @Prop() private piece!: ChessPiece
+  @Prop() piece!: ChessPiece
 
   @Action('movePiece') movePiece!: ActionMethod
   @Action('startMoving') startMoving!: ActionMethod
@@ -39,7 +39,7 @@ export default class Piece extends Vue {
   @Getter SessionLoaded!: boolean
   @Getter isTurn!: boolean
   @Getter Player!: ChessPlayer
-  @Getter isDisabled!: boolean
+  @Getter Socket!: ChessSocketState
 
   hover = false
   hidden = false
@@ -65,16 +65,6 @@ export default class Piece extends Vue {
       animate__faster: this.animated
       /* eslint-enable */
     }
-  }
-
-  created (): void {
-    this.$store.subscribe((mutation) => {
-      switch (mutation.type) {
-        case 'Connected':
-          this.$data.isDisabled = !mutation.payload
-          break
-      }
-    })
   }
 
   onDragStart (ev: DragEvent): void {
@@ -149,7 +139,7 @@ export default class Piece extends Vue {
 
   get draggable (): boolean {
     return this.isTurn &&
-      !this.isDisabled &&
+      this.Socket.isConnected &&
       this.Player.color === this.piece.color
   }
 

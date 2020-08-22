@@ -1,5 +1,4 @@
 import Vue from 'vue'
-import VueNoty from 'vuejs-noty'
 import VueNativeSock from 'vue-native-websocket'
 import VueI18n, { LocaleMessages } from 'vue-i18n'
 
@@ -15,12 +14,6 @@ Vue.use(VueI18n)
 const i18n = new VueI18n({
   locale: 'en',
   messages: translations as LocaleMessages
-})
-
-Vue.use(VueNoty, {
-  timeout: 3000,
-  progressBar: true,
-  layout: 'bottomCenter'
 })
 
 Vue.use(VueNativeSock, CONFIG_WS, {

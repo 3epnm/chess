@@ -4,7 +4,7 @@ import { Module, VuexModule, Mutation, Action } from 'vuex-module-decorators'
 import { CONFIG_IMAGES } from '../../config'
 
 @Module
-export default class ChessImages extends VuexModule {
+export default class ChessImages extends VuexModule implements ChessImagesStore {
   images: ChessPieceImage[] = []
   imagesLoaded = false
 
@@ -33,7 +33,13 @@ export default class ChessImages extends VuexModule {
 
       return images
     } catch (err) {
-      this.context.commit('ERROR', { code: 2, sender: 'Chess Images', message: 'Chess Images not found.', detail: 'Network Error', raw: err })
+      this.context.commit('ERROR', {
+        code: 2,
+        sender: 'Chess Images',
+        message: 'Chess Images not found.',
+        detail: 'Network Error',
+        raw: err
+      })
     }
 
     return []

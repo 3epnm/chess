@@ -31,6 +31,19 @@ declare interface ChessStore {
   player: ChessPlayer;
 }
 
+declare interface WebSocketStore {
+  socket: ChessSocketState;
+}
+
+declare interface ChessImagesStore {
+  images: ChessPieceImage[];
+  imagesLoaded: boolean;
+}
+
+declare interface ErrorStore {
+  error: ChessError;
+}
+
 declare interface ChessPiece {
   key: string;
   pos: ChessBoardPositions;
@@ -75,15 +88,15 @@ declare interface ChessPieceImage {
 
 declare interface ChessError {
   code: number;
-  sender: string;
-  message: string;
+  sender?: string;
+  message?: string;
   detail?: string;
   raw?: Error;
 }
 
 declare interface ChessWarning {
-  sender: string;
-  message: string;
+  sender?: string;
+  message?: string;
 }
 
 declare interface ChessSocketState {

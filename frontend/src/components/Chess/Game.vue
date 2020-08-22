@@ -1,6 +1,16 @@
 <template>
   <div class="chess">
-    <div v-if="Error.code < 1" class="info">
+    <div v-if="Error.message" class="error">
+      <div>
+        <span class="animate__animated animate__heartBeat animate__infinite" v-html="$t(Error.message)"></span>
+      </div>
+    </div>
+    <div v-else-if="Warning.message" class="warning">
+      <div>
+        <span class="animate__animated animate__heartBeat animate__infinite" v-html="$t(Warning.message)"></span>
+      </div>
+    </div>
+    <div v-else class="info">
       <div :class="classObjectCenter">
         <span
           v-if="!isPending && isPlayer"
@@ -9,12 +19,9 @@
           v-if="GameMessage">{{ $t(GameMessage) }}</span>
       </div>
     </div>
-    <div v-else class="error">
-      <div>
-        <span class="animate__animated animate__heartBeat animate__infinite">{{ $t(Error.message) }}</span>
-      </div>
-    </div>
+
     <Board/>
+
     <div class="ctrls">
       <button
         v-if="!isStarted"
@@ -50,13 +57,16 @@ export default class Game extends Vue {
   @Action quitGame!: ActionMethod
 
   @Getter Error!: ChessError
+  @Getter Warning!: ChessError
+  @Getter Socket!: ChessSocketState
+  @Getter ImagesLoaded!: boolean
+  @Getter SessionLoaded!: boolean
   @Getter Player!: ChessPlayer
   @Getter isStarted!: boolean
   @Getter isPlayer!: boolean
   @Getter isVisitor!: boolean
   @Getter isPending!: boolean
   @Getter isTurn!: boolean
-  @Getter isDisabled!: boolean
 
   get classObjectCenter (): VueElementClassObj {
     return {
@@ -76,12 +86,9 @@ export default class Game extends Vue {
 
   async created (): Promise<void> {
     await this.init()
-
-    this.$store.subscribe((mutation) => {
-      switch (mutation.type) {
-        case 'Connected':
-          this.$data.isDisabled = !mutation.payload
-          break
+    this.$store.subscribe(async (mutation) => {
+      if ((!this.ImagesLoaded || !this.SessionLoaded) && mutation.type === 'SOCKET_ONOPEN') {
+        await this.init()
       }
     })
   }
@@ -99,6 +106,10 @@ export default class Game extends Vue {
       return 'started'
     }
   }
+
+  get isDisabled (): boolean {
+    return !this.Socket.isConnected
+  }
 }
 </script>
 
@@ -110,7 +121,6 @@ export default class Game extends Vue {
     div {
       width: 380px;
       margin: 0 auto;
-
       &:not(.center) {
         span:first-child {
           float: left;
@@ -125,7 +135,7 @@ export default class Game extends Vue {
       }
     }
   }
-  .error {
+  .error, .warning {
     height: 1em;
     margin-bottom: 1em;
     div {
@@ -138,8 +148,13 @@ export default class Game extends Vue {
       }
     }
   }
+  .warning {
+    div span {
+      color: orange;
+    }
+  }
   .ctrls {
-    margin-top:1em;
+    margin-top: 1em;
   }
 }
 </style>

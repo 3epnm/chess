@@ -11,6 +11,13 @@
     "other-turn": "It's your opponent's turn.",
     "Error, unexpected breakup": "Error, unexpected breakup",
     "Error while reconnect, give up.": "Error while reconnecting, give up.",
-    "Chess API not responding.": "Error, could not connect to server."
+    "Chess API not responding.": "Error, could not connect to server.",
+    "Chess server shuts down.": "Chess server shuts down.",
+    "Connecting, 1. attempt.": "Connecting, <i>1st</i> attempt.",
+    "Connecting, 2. attempt.": "Connecting, <i>2nd</i> attempt.",
+    "Connecting, 3. attempt.": "Connecting, <i>3rd</i> attempt.",
+    "Connecting, 4. attempt.": "Connecting, <i>4th</i> attempt.",
+    "Connecting, 5. attempt.": "Connecting, <i>5th</i> attempt.",
+    "Connecting, 6. attempt.": "Connecting, <i>6th</i> attempt."
   }
 }

@@ -22,9 +22,6 @@ store.subscribe((mutation) => {
     case 'SOCKET_ONCLOSE':
       store.dispatch('SOCKET_ONCLOSE')
       break
-    case 'SOCKET_ONERROR':
-      store.dispatch('SOCKET_ONERROR')
-      break
     case 'SOCKET_RECONNECT':
       store.dispatch('SOCKET_RECONNECT', mutation.payload)
       break

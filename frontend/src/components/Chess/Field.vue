@@ -14,7 +14,7 @@ import { Action } from 'vuex-class'
 
 @Component
 export default class Field extends Vue {
-  @Prop() private field!: ChessField
+  @Prop() field!: ChessField
   @Action('movePiece') movePiece!: ActionMethod
 
   hover = false
