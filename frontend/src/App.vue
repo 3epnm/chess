@@ -7,6 +7,11 @@
 <style lang="scss">
 @import './assets/styles/animate.min.css';
 
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
 body {
   font-family: Avenir, Helvetica, Arial, sans-serif;
 }
@@ -17,6 +22,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 #nav {
